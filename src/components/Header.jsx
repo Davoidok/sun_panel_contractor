@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import logoImg from '../assets/Titan Shield Logo.PNG';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,33 +47,7 @@ export default function Header() {
         <div className="container header-container">
           {/* Logo */}
           <a href="#" className="logo-area" onClick={(e) => handleLinkClick(e, '#root')}>
-            <svg className="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Outer Shield Outline */}
-              <path d="M50 5 L85 18 C85 55, 70 85, 50 95 C30 85, 15 55, 15 18 L50 5 Z" fill="url(#shieldBg)" stroke="url(#logoGrad)" strokeWidth="3" />
-              {/* Vertical Pillars (Blue Bars from Logo) */}
-              <rect x="32" y="25" width="6" height="30" rx="3" fill="#00E5FF" opacity="0.8" />
-              <rect x="42" y="18" width="6" height="40" rx="3" fill="#4364F7" />
-              <rect x="52" y="18" width="6" height="40" rx="3" fill="#4364F7" />
-              <rect x="62" y="25" width="6" height="30" rx="3" fill="#00E5FF" opacity="0.8" />
-              {/* Spartan Helmet silhouette */}
-              <path d="M50 25 C41 25, 38 35, 38 48 C38 52, 40 56, 42 58 L45 52 L48 55 L45 70 L50 67 L55 70 L52 55 L55 52 L58 58 C60 56, 62 52, 62 48 C62 35, 59 25, 50 25 Z" fill="#E2E8F0" />
-              <path d="M50 20 L53 30 L47 30 Z" fill="#cbd5e1" />
-              <defs>
-                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0052D4" />
-                  <stop offset="50%" stopColor="#4364F7" />
-                  <stop offset="100%" stopColor="#00E5FF" />
-                </linearGradient>
-                <linearGradient id="shieldBg" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#060913" />
-                  <stop offset="100%" stopColor="#0F172A" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="logo-text">
-              <span className="brand-title">TITAN<span className="text-gradient">SHIELD</span></span>
-              <span className="brand-subtitle">PANELS, INC.</span>
-            </div>
+            <img src={logoImg} alt="Titan Shield Panels Inc. Logo" className="logo-img-header" />
           </a>
 
           {/* Desktop Navigation */}
@@ -166,39 +141,17 @@ export default function Header() {
           gap: 0.75rem;
         }
 
-        .logo-svg {
-          width: 48px;
-          height: 48px;
+        .logo-img-header {
+          height: 56px;
+          width: auto;
+          object-fit: contain;
           filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.2));
           transition: var(--transition-normal);
         }
 
-        .logo-area:hover .logo-svg {
-          transform: rotate(-5deg) scale(1.05);
+        .logo-area:hover .logo-img-header {
+          transform: scale(1.05);
           filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.4));
-        }
-
-        .logo-text {
-          display: flex;
-          flex-direction: column;
-          line-height: 1.1;
-        }
-
-        .brand-title {
-          font-family: var(--font-headings);
-          font-size: 1.35rem;
-          font-weight: 900;
-          color: var(--text-light);
-          letter-spacing: 0.05em;
-        }
-
-        .brand-subtitle {
-          font-family: var(--font-headings);
-          font-size: 0.65rem;
-          font-weight: 500;
-          color: var(--text-muted);
-          letter-spacing: 0.3em;
-          margin-top: 2px;
         }
 
         .nav-desktop {

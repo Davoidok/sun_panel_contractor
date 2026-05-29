@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import heroImage from '../assets/wall_hero.png';
+import logoImg from '../assets/Titan Shield Logo.PNG';
 
 export default function Hero() {
   const scrollToSection = (e, href) => {
@@ -20,7 +20,7 @@ export default function Hero() {
   return (
     <section className="hero-section">
       <div className="grid-bg"></div>
-      
+
       {/* Decorative Blur Glows */}
       <div className="hero-glow-1"></div>
       <div className="hero-glow-2"></div>
@@ -28,7 +28,7 @@ export default function Hero() {
       <div className="container hero-container">
         <div className="grid-2">
           {/* Text Content */}
-          <motion.div 
+          <motion.div
             className="hero-text-content"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -42,20 +42,20 @@ export default function Hero() {
               <span className="text-gradient">Shielding</span> your space.
             </h1>
             <p className="hero-description">
-              Titan Shield Panels Inc. provides premium, eco-friendly temporary wall systems 
-              and dust containment solutions for commercial remodels, healthcare retrofits, and 
+              Titan Shield Panels Inc. provides premium, eco-friendly temporary wall systems
+              and dust containment solutions for commercial remodels, healthcare retrofits, and
               occupied renovations. Experience rapid installation, zero waste, and maximum productivity.
             </p>
             <div className="hero-cta-buttons">
-              <a 
-                href="#contact" 
+              <a
+                href="#contact"
                 className="btn btn-primary"
                 onClick={(e) => scrollToSection(e, '#contact')}
               >
                 Schedule Consultation
               </a>
-              <a 
-                href="#about" 
+              <a
+                href="#about"
                 className="btn btn-secondary"
                 onClick={(e) => scrollToSection(e, '#about')}
               >
@@ -65,25 +65,19 @@ export default function Hero() {
           </motion.div>
 
           {/* Visual Showcase */}
-          <motion.div 
+          <motion.div
             className="hero-visual"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
           >
             <div className="hero-image-wrapper">
-              <div className="image-border-glow"></div>
-              <img 
-                src={heroImage} 
-                alt="Titan Shield Modular Temporary Wall Panels" 
-                className="hero-img"
+              <img
+                src={logoImg}
+                alt="Titan Shield Panels Inc. Logo"
+                className="hero-img logo-img-hero"
               />
-              <div className="image-overlay-card glass-panel">
-                <span className="card-accent-line"></span>
-                <span className="card-number">01</span>
-                <span className="card-title">Swiftwall Systems</span>
-                <p className="card-text">Innovative panel systems designed to minimize disruption and reduce renovation waste.</p>
-              </div>
+
             </div>
           </motion.div>
         </div>
@@ -189,30 +183,30 @@ export default function Hero() {
         .hero-image-wrapper {
           position: relative;
           width: 100%;
-          max-width: 520px;
-          border-radius: 20px;
-          overflow: visible;
+          max-width: 480px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        .image-border-glow {
-          position: absolute;
-          inset: -3px;
-          background: var(--grad-primary);
-          border-radius: 23px;
-          z-index: 1;
-          opacity: 0.75;
-          filter: blur(1px);
-        }
-
-        .hero-img {
+        .hero-img.logo-img-hero {
           width: 100%;
-          aspect-ratio: 4/3;
-          object-fit: cover;
-          border-radius: 20px;
+          max-width: 420px;
+          height: auto;
+          aspect-ratio: unset;
+          object-fit: contain;
+          border-radius: 0;
+          border: none;
+          background: transparent;
           position: relative;
           z-index: 2;
           display: block;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          filter: drop-shadow(0 0 40px rgba(0, 82, 212, 0.35)) drop-shadow(0 0 80px rgba(0, 229, 255, 0.15));
+          transition: filter 0.4s ease;
+        }
+
+        .hero-visual:hover .logo-img-hero {
+          filter: drop-shadow(0 0 50px rgba(0, 82, 212, 0.5)) drop-shadow(0 0 100px rgba(0, 229, 255, 0.25));
         }
 
         .image-overlay-card {
