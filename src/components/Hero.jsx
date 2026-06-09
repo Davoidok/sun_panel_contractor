@@ -1,7 +1,30 @@
-import { motion } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from '../assets/Titan Shield Logo.PNG';
+import photo1 from '../assets/PHOTO-2026-06-02-12-00-25 (1).jpg';
+import photo2 from '../assets/PHOTO-2026-06-02-12-00-25.jpg';
+import photo3 from '../assets/PHOTO-2026-06-02-12-00-26.jpg';
+import photo4 from '../assets/PHOTO-2026-06-02-12-00-27.jpg';
+import photo5 from '../assets/PHOTO-2026-06-02-12-00-25 (2).jpg';
+import photo6 from '../assets/PHOTO-2026-06-02-12-00-25 (3).jpg';
+import photo7 from '../assets/PHOTO-2026-06-02-12-00-26 (1).jpg';
+import photo8 from '../assets/PHOTO-2026-06-02-12-00-26 (2).jpg';
+
+const carouselImages = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8];
+const SLIDE_INTERVAL = 5000;
 
 export default function Hero() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const next = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % carouselImages.length);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(next, SLIDE_INTERVAL);
+    return () => clearInterval(timer);
+  }, [next]);
+
   const scrollToSection = (e, href) => {
     e.preventDefault();
     const targetElement = document.querySelector(href);
@@ -19,6 +42,36 @@ export default function Hero() {
 
   return (
     <section className="hero-section">
+      {/* Background Carousel */}
+      <div className="carousel-bg">
+        <AnimatePresence>
+          <motion.img
+            key={activeIndex}
+            src={carouselImages[activeIndex]}
+            alt=""
+            className="carousel-slide"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeInOut' }}
+          />
+        </AnimatePresence>
+        {/* Dark overlay so text remains legible */}
+        <div className="carousel-overlay" />
+      </div>
+
+      {/* Dot Indicators */}
+      <div className="carousel-dots">
+        {carouselImages.map((_, i) => (
+          <button
+            key={i}
+            className={`carousel-dot${i === activeIndex ? ' active' : ''}`}
+            onClick={() => setActiveIndex(i)}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
       <div className="grid-bg"></div>
 
       {/* Decorative Blur Glows */}
@@ -84,6 +137,65 @@ export default function Hero() {
       </div>
 
       <style>{`
+        /* ── Carousel Background ── */
+        .carousel-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          overflow: hidden;
+        }
+
+        .carousel-slide {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+
+        .carousel-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            135deg,
+            rgba(5, 10, 24, 0.82) 0%,
+            rgba(5, 10, 24, 0.65) 50%,
+            rgba(5, 10, 24, 0.75) 100%
+          );
+          z-index: 1;
+        }
+
+        /* ── Dot Indicators ── */
+        .carousel-dots {
+          position: absolute;
+          bottom: 2rem;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 0.6rem;
+          z-index: 10;
+        }
+
+        .carousel-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          border: 2px solid rgba(255, 255, 255, 0.5);
+          background: transparent;
+          cursor: pointer;
+          padding: 0;
+          transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .carousel-dot.active {
+          background: var(--color-accent, #00e5ff);
+          border-color: var(--color-accent, #00e5ff);
+          transform: scale(1.25);
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
+        }
+
+        /* ── Hero Layout ── */
         .hero-section {
           position: relative;
           padding: 10rem 0 7rem 0;
@@ -107,6 +219,7 @@ export default function Hero() {
           background: radial-gradient(circle, rgba(0, 82, 212, 0.12) 0%, rgba(0, 229, 255, 0.02) 60%, transparent 100%);
           filter: blur(60px);
           pointer-events: none;
+          z-index: 2;
         }
 
         .hero-glow-2 {
@@ -118,6 +231,7 @@ export default function Hero() {
           background: radial-gradient(circle, rgba(67, 100, 247, 0.08) 0%, transparent 80%);
           filter: blur(50px);
           pointer-events: none;
+          z-index: 2;
         }
 
         .hero-tag {
