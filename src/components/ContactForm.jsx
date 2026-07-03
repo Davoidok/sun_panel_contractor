@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Mail, Phone, User, CheckCircle2, ChevronRight, ShieldAlert } from 'lucide-react';
+import { useForm } from '@formspree/react';
+
+const FORMSPREE_FORM_ID = 'mjgdrgep';
 
 export default function ContactForm() {
+  const [formspreeState, sendToFormspree] = useForm(FORMSPREE_FORM_ID);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,22 +52,37 @@ export default function ContactForm() {
     }
     if (!formData.projectType) tempErrors.projectType = "Please select a project type";
     if (!formData.message.trim()) tempErrors.message = "Project details are required";
-    
+
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await sendToFormspree({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        projectType: formData.projectType,
+        message: formData.message,
+      });
+
+      if (formspreeState.errors && formspreeState.errors.length > 0) {
+        // Formspree returned field/server errors — surface a generic message
+        setErrors({ submit: 'Submission failed. Please try again or email us directly.' });
+      } else {
+        setSubmitSuccess(true);
+      }
+    } catch {
+      setErrors({ submit: 'Network error. Please check your connection and try again.' });
+    } finally {
       setIsSubmitting(false);
-      setSubmitSuccess(true);
-    }, 1500);
+    }
   };
 
   const resetForm = () => {
@@ -79,13 +99,13 @@ export default function ContactForm() {
   return (
     <section id="contact" className="section contact-section bg-gradient-glow">
       <div className="container">
-        
+
         {/* Section Header */}
         <div className="section-header">
           <span className="section-tag">Get Started</span>
           <h2 className="text-metallic">Ready To Improve Your Next Remodel Project?</h2>
           <p className="section-desc">
-            Get in touch with our containment experts today to secure your site layout, 
+            Get in touch with our containment experts today to secure your site layout,
             control dust and debris, and maintain full business operations.
           </p>
         </div>
@@ -94,7 +114,7 @@ export default function ContactForm() {
         <div className="contact-wrapper">
           <AnimatePresence mode="wait">
             {!submitSuccess ? (
-              <motion.div 
+              <motion.div
                 className="contact-card glass-panel"
                 key="contact-form-key"
                 initial={{ opacity: 0, y: 20 }}
@@ -104,19 +124,19 @@ export default function ContactForm() {
               >
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="form-grid">
-                    
+
                     {/* Full Name */}
                     <div className="form-group">
                       <label className="form-label" htmlFor="name">
                         <span className="label-icon"><User size={14} /></span> Full Name
                       </label>
-                      <input 
-                        type="text" 
-                        id="name" 
+                      <input
+                        type="text"
+                        id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder="John Doe" 
+                        placeholder="John Doe"
                         className={`form-input ${errors.name ? 'input-error' : ''}`}
                       />
                       {errors.name && <span className="error-text"><ShieldAlert size={12} /> {errors.name}</span>}
@@ -127,13 +147,13 @@ export default function ContactForm() {
                       <label className="form-label" htmlFor="email">
                         <span className="label-icon"><Mail size={14} /></span> Business Email
                       </label>
-                      <input 
-                        type="email" 
-                        id="email" 
+                      <input
+                        type="email"
+                        id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        placeholder="johndoe@company.com" 
+                        placeholder="johndoe@company.com"
                         className={`form-input ${errors.email ? 'input-error' : ''}`}
                       />
                       {errors.email && <span className="error-text"><ShieldAlert size={12} /> {errors.email}</span>}
@@ -144,13 +164,13 @@ export default function ContactForm() {
                       <label className="form-label" htmlFor="phone">
                         <span className="label-icon"><Phone size={14} /></span> Phone Number
                       </label>
-                      <input 
-                        type="tel" 
-                        id="phone" 
+                      <input
+                        type="tel"
+                        id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="(555) 000-0000" 
+                        placeholder="(555) 000-0000"
                         className={`form-input ${errors.phone ? 'input-error' : ''}`}
                       />
                       {errors.phone && <span className="error-text"><ShieldAlert size={12} /> {errors.phone}</span>}
@@ -161,8 +181,8 @@ export default function ContactForm() {
                       <label className="form-label" htmlFor="projectType">
                         <span className="label-icon"><Calendar size={14} /></span> Project Service
                       </label>
-                      <select 
-                        id="projectType" 
+                      <select
+                        id="projectType"
                         name="projectType"
                         value={formData.projectType}
                         onChange={handleInputChange}
@@ -181,12 +201,12 @@ export default function ContactForm() {
                       <label className="form-label" htmlFor="message">
                         Describe your temporary containment needs (timeline, dimensions, facility type)
                       </label>
-                      <textarea 
-                        id="message" 
+                      <textarea
+                        id="message"
                         name="message"
                         value={formData.message}
                         onChange={handleInputChange}
-                        placeholder="Please details your requirements here. (e.g. 50 linear feet of walls, 12ft high, hospital corridor...)" 
+                        placeholder="Please details your requirements here. (e.g. 50 linear feet of walls, 12ft high, hospital corridor...)"
                         className={`form-textarea ${errors.message ? 'input-error' : ''}`}
                       ></textarea>
                       {errors.message && <span className="error-text"><ShieldAlert size={12} /> {errors.message}</span>}
@@ -196,8 +216,13 @@ export default function ContactForm() {
 
                   {/* Submit Button */}
                   <div className="form-submit-area">
-                    <button 
-                      type="submit" 
+                    {errors.submit && (
+                      <p className="error-text submit-error">
+                        <ShieldAlert size={14} /> {errors.submit}
+                      </p>
+                    )}
+                    <button
+                      type="submit"
                       className="btn btn-primary btn-submit"
                       disabled={isSubmitting}
                     >
@@ -211,7 +236,7 @@ export default function ContactForm() {
                 </form>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 className="contact-card success-card glass-panel"
                 key="success-receipt-key"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -248,8 +273,8 @@ export default function ContactForm() {
                 <p className="success-footer">
                   Our temporary wall specialists will review your requirements and reach out to you within 24 business hours to finalize a schedule.
                 </p>
-                <button 
-                  onClick={resetForm} 
+                <button
+                  onClick={resetForm}
                   className="btn btn-secondary btn-new-request"
                 >
                   Submit Another Request
@@ -316,7 +341,14 @@ export default function ContactForm() {
         .form-submit-area {
           margin-top: 2rem;
           display: flex;
-          justify-content: flex-end;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0.75rem;
+        }
+
+        .submit-error {
+          font-size: 0.85rem;
+          margin: 0;
         }
 
         .btn-submit {
